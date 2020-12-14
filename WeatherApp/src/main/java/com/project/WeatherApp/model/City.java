@@ -11,13 +11,13 @@ package com.project.WeatherApp.model;
 import java.util.Vector;
 
 public class City {
-	
-	protected long id;
+
 	protected String name;
+	protected long id;
 	protected Coordinates coordinates;
 	protected String country;
-	private Vector<Weather> weatherArray = new Vector<Weather>();
-	
+	//private Vector<Weather> weatherArray = new Vector<Weather>();
+	private Weather[] vector = new Weather[40];
 	
 	
 	public City() {
@@ -99,19 +99,26 @@ public class City {
 		this.country = country;
 	}
 	
-	public Vector<Weather> getWeatherArray() {
-		return weatherArray;
+
+	public Weather[] getVector() {
+		return vector;
 	}
 
-	public void addWeather (Weather e) {
-		weatherArray.add(e);
+	public void setVector(Weather[] vector) {
+		this.vector = vector;
 	}
 	
+	public String toStringVector() {
+		String toReturn="";
+		for (int i=0; i<vector.length; i++)
+			toReturn += vector[i].toString();
+		return toReturn;
+	}
 
 	@Override
 	public String toString() {
 		return "City [id=" + id + ", name=" + name + ", coordinates=" + coordinates + ", country=" + country
-				+ ", weatherArray=" + weatherArray + "]";
+				+ ", weatherArray=" + toStringVector() + "]";
 	}
 
 	@Override

@@ -57,100 +57,35 @@ public class ServiceImpl implements com.project.WeatherApp.service.Service {
 		
 	}
 	
-	/*
-	public String getVisibilityfromApi(String city) {
-		JSONParser parser = new JSONParser(); 
-		JSONObject object = null;
-		String country = null;
-		
-		String url = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + api_key;
-		
-		RestTemplate rt = new RestTemplate();
-		
-		String result = rt.getForObject(url,String.class);
-		
-		try {
-			object = (JSONObject) parser.parse(result);
-			
-			country = (String) object.get("country");
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-		return country;
-		
-	}
-	/*
-	 * 
-	 */
 	
 	
-	/*
-	 * 
-	 BUONOOOO!
-	public String getVisibilityfromApi(String name) {
-		
-		JSONObject object = getCityWeather(name);
-		
-		City city = new City(name);
-		
-		city = getCityInfofromApi(name);
-		String result = "";
-		
-		try {
-			
-			JSONArray weatherArray = object.getJSONArray("list");
-			JSONObject support;
-			int visibility;
-			String data;
-			
-			for (int i = 0; i<weatherArray.length(); i++) {
-				support = weatherArray.getJSONObject(i);
-				visibility = (int) support.get("visibility");
-				data = (String) support.get("dt_txt");
-				result += visibility + " " + data + "\n";
-			}
-	
-		} catch(Exception e) {
-			return "ERRORE!";
-		}
-		
-		return result;
-		
-	}
-	*/
-	
-	
-	
+
 	public JSONArray getVisibilityfromApi(String name) {
 	
 		JSONObject object = getCityWeather(name);
 		JSONArray toGive = new JSONArray();
-		
-		try {
 			
 			JSONArray weatherArray = object.getJSONArray("list");
 			JSONObject support;
-			JSONObject toReturn = new JSONObject();
 			int visibility;
 			String data;
 			
 			for (int i = 0; i<weatherArray.length(); i++) {
+				
 				support = weatherArray.getJSONObject(i);
 				visibility = (int) support.get("visibility");
 				data = (String) support.get("dt_txt");
+				JSONObject toReturn = new JSONObject();
 				toReturn.put("Visibility", visibility);
 				toReturn.put("Data", data);
 				toGive.put(toReturn);
+				
 			}
 	
-		} catch(Exception e) {
-		}
 		
 		return toGive;
 		
 	}
-	
 	
 	
 	public City getCityWeatherRistrictfromApi(String name) {
@@ -185,6 +120,7 @@ public class ServiceImpl implements com.project.WeatherApp.service.Service {
 				weather.setTemp_max(objectW2.getDouble("temp_max"));
 				weather.setTemp_min(objectW2.getDouble("temp_min"));
 				weather.setFeels_like(objectW2.getDouble("feels_like"));
+				vector[i] = new Weather();
 				vector[i].setData(weather.getData());
 				vector[i].setVisibility(weather.getVisibility());
 				vector[i].setTemp_max(weather.getTemp_max());
@@ -197,15 +133,10 @@ public class ServiceImpl implements com.project.WeatherApp.service.Service {
 		} catch(Exception e) {
 		}
 		
-		for (int i=0; i<vector.length; i++) {
-			System.out.println(vector[i].getData());
-			System.out.println(vector[i].getVisibility());
-			System.out.println(vector[i].getTemp_max());
-			System.out.println(vector[i].getTemp_min());
-			System.out.println(vector[i].getFeels_like());
-			System.out.println(vector[i].getDescription());
-			System.out.println(vector[i].getMain());
-		}
+		
+		city.setVector(vector);
+		
+		
 		
 		return city;
 		
