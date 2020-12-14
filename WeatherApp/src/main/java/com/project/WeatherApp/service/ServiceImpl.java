@@ -43,12 +43,10 @@ public class ServiceImpl implements com.project.WeatherApp.service.Service {
 	*/
 	
 	//va a prendere le previsioni meteo di una città
-	
-	
 	public JSONObject getCityWeather(String city) {
 		
 		JSONObject obj;
-		String url = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid="+api_key;
+		String url = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid="+api_key;
 		
 		RestTemplate rt = new RestTemplate();
 		
@@ -60,12 +58,6 @@ public class ServiceImpl implements com.project.WeatherApp.service.Service {
 	}
 	
 	/*
-	public static void main(String[] args) { 
-		ServiceImpl a = new ServiceImpl();  
-		a.getCityWeather("Tolentino"); 
-	}
-	*/
-	
 	public String getVisibilityfromApi(String city) {
 		JSONParser parser = new JSONParser(); 
 		JSONObject object = null;
@@ -86,6 +78,163 @@ public class ServiceImpl implements com.project.WeatherApp.service.Service {
 		}
 		
 		return country;
+		
+	}
+	/*
+	 * 
+	 */
+	
+	
+	/*
+	 * 
+	 BUONOOOO!
+	public String getVisibilityfromApi(String name) {
+		
+		JSONObject object = getCityWeather(name);
+		
+		City city = new City(name);
+		
+		city = getCityInfofromApi(name);
+		String result = "";
+		
+		try {
+			
+			JSONArray weatherArray = object.getJSONArray("list");
+			JSONObject support;
+			int visibility;
+			String data;
+			
+			for (int i = 0; i<weatherArray.length(); i++) {
+				support = weatherArray.getJSONObject(i);
+				visibility = (int) support.get("visibility");
+				data = (String) support.get("dt_txt");
+				result += visibility + " " + data + "\n";
+			}
+	
+		} catch(Exception e) {
+			return "ERRORE!";
+		}
+		
+		return result;
+		
+	}
+	*/
+	
+	
+	
+	public JSONArray getVisibilityfromApi(String name) {
+	
+		JSONObject object = getCityWeather(name);
+		JSONArray toGive = new JSONArray();
+		
+		try {
+			
+			JSONArray weatherArray = object.getJSONArray("list");
+			JSONObject support;
+			JSONObject toReturn = new JSONObject();
+			int visibility;
+			String data;
+			
+			for (int i = 0; i<weatherArray.length(); i++) {
+				support = weatherArray.getJSONObject(i);
+				visibility = (int) support.get("visibility");
+				data = (String) support.get("dt_txt");
+				toReturn.put("Visibility", visibility);
+				toReturn.put("Data", data);
+				toGive.put(toReturn);
+			}
+	
+		} catch(Exception e) {
+		}
+		
+		return toGive;
+		
+	}
+	
+	
+	
+	public City getCityWeatherRistrictfromApi(String name) {
+		
+		JSONObject object = getCityWeather(name);
+		
+		City city = new City(name);
+		
+		city = getCityInfofromApi(name);
+		
+		Weather weather = new Weather();
+		
+		JSONArray weatherArray = object.getJSONArray("list");
+		JSONObject counter;
+		
+		Weather[] vector = new Weather[weatherArray.length()];
+		
+		
+		try {
+			
+			
+			for (int i = 0; i<weatherArray.length(); i++) {
+				
+				counter = weatherArray.getJSONObject(i);
+				weather.setVisibility(counter.getInt("visibility"));
+				weather.setData(counter.getString("dt_txt"));
+				JSONArray arrayW = counter.getJSONArray("weather");
+				JSONObject objectW = arrayW.getJSONObject(0);
+				weather.setDescription(objectW.getString("description"));
+				weather.setMain(objectW.getString("main"));
+				JSONObject objectW2 = counter.getJSONObject("main");
+				weather.setTemp_max(objectW2.getDouble("temp_max"));
+				weather.setTemp_min(objectW2.getDouble("temp_min"));
+				weather.setFeels_like(objectW2.getDouble("feels_like"));
+				vector[i].setData(weather.getData());
+				vector[i].setVisibility(weather.getVisibility());
+				vector[i].setTemp_max(weather.getTemp_max());
+				vector[i].setTemp_min(weather.getTemp_min());
+				vector[i].setFeels_like(weather.getFeels_like());
+				vector[i].setDescription(weather.getDescription());
+				vector[i].setMain(weather.getMain());
+			}
+	
+		} catch(Exception e) {
+		}
+		
+		for (int i=0; i<vector.length; i++) {
+			System.out.println(vector[i].getData());
+			System.out.println(vector[i].getVisibility());
+			System.out.println(vector[i].getTemp_max());
+			System.out.println(vector[i].getTemp_min());
+			System.out.println(vector[i].getFeels_like());
+			System.out.println(vector[i].getDescription());
+			System.out.println(vector[i].getMain());
+		}
+		
+		return city;
+		
+	}
+	
+	
+	public City getCityInfofromApi(String name) {
+		
+		JSONObject object = getCityWeather(name);
+		
+		City city = new City(name);
+		
+		try {
+			
+			JSONObject cityObj = object.getJSONObject("city");
+			String country = (String) cityObj.get("country");
+			int id = (int) cityObj.get("id");
+			JSONObject coordinatesObj = cityObj.getJSONObject("coord");
+			double latitude = (double) coordinatesObj.get("lat");
+			double longitude = (double) coordinatesObj.get("lon");
+			Coordinates coordinates = new Coordinates(latitude,longitude); 
+			city.setCountry(country);
+			city.setId(id);
+			city.setCoordinates(coordinates);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		return city;
 		
 	}
 	

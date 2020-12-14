@@ -41,8 +41,30 @@ public class Controller {
 	*/
 	
 	@GetMapping(value="/city")
-    public ResponseEntity<Object> getCity2(@RequestParam String cityName) {
+    public ResponseEntity<Object> getCity(@RequestParam String cityName) {
 		return new ResponseEntity<> (service.getCityWeather(cityName).toString(), HttpStatus.OK);
+    }
+	
+	@GetMapping(value="/country")
+    public ResponseEntity<Object> getCountry(@RequestParam String cityName) {
+		return new ResponseEntity<> (service.getCityInfofromApi(cityName).toString(), HttpStatus.OK);
+    }
+	
+	@GetMapping(value="/visibility")
+    public ResponseEntity<Object> getVisibility(@RequestParam String cityName) {
+		return new ResponseEntity<> (service.getVisibilityfromApi(cityName).toString(), HttpStatus.OK);
+    }
+	
+	@GetMapping(value="/cityWeather")
+    public ResponseEntity<Object> getCityWeather(@RequestParam String cityName) {
+		return new ResponseEntity<> (service.getCityWeatherRistrictfromApi(cityName).toString(), HttpStatus.OK);
+    }
+	
+	
+	/*
+	@GetMapping(value="/visibility")
+    public ResponseEntity<Object> getVisibility(@RequestParam String cityName) {
+		return new ResponseEntity<> (service.getVisibilityfromApi(cityName).toString(), HttpStatus.OK);
     }
 	
 	/*

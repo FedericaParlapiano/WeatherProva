@@ -7,7 +7,8 @@ package com.project.WeatherApp.model;
  * @author Federica
  * @autor Francesca
  */
-import java.util.ArrayList;
+
+import java.util.Vector;
 
 public class City {
 	
@@ -15,22 +16,20 @@ public class City {
 	protected String name;
 	protected Coordinates coordinates;
 	protected String country;
-	private ArrayList<Weather> weather = new ArrayList<Weather>();
+	private Vector<Weather> weatherArray = new Vector<Weather>();
+	
+	
 	
 	public City() {
-		this.id=0;
-		this.name=null;
-		this.coordinates=null;
-		this.country=null;
-		this.weather = null;
+		super();
 	}
-	
+
 	public City(long id) {
 		this.id=id;
 		this.name=null;
 		this.coordinates=null;
 		this.country=null;
-		this.weather = null;
+		//this.weatherArray = null;
 	}
 	
 	public City(String name) {
@@ -38,7 +37,7 @@ public class City {
 		this.name=name;
 		this.coordinates=null;
 		this.country=null;
-		this.weather = null;
+		//this.weatherArray = null;
 	}
 	
 	
@@ -47,7 +46,7 @@ public class City {
 		this.name=null;
 		this.coordinates=coordinates;
 		this.country=null;
-		this.weather = null;
+		//this.weatherArray = null;
 	}
 	
 	public City(String name, String country) {
@@ -55,7 +54,7 @@ public class City {
 		this.name=name;
 		this.coordinates=null;
 		this.country=country;
-		this.weather = null;
+		//this.weatherArray = null;
 	}
 
 	
@@ -65,7 +64,7 @@ public class City {
 		this.name = name;
 		this.coordinates = coordinates;
 		this.country = country;
-		this.weather = null;
+		//this.weatherArray = null;
 	}
 
 	public long getId() {
@@ -100,15 +99,19 @@ public class City {
 		this.country = country;
 	}
 	
-	public boolean addWeather(Weather e) {
-		if(weather.add(e))
-			return true;
-		return false;
+	public Vector<Weather> getWeatherArray() {
+		return weatherArray;
 	}
+
+	public void addWeather (Weather e) {
+		weatherArray.add(e);
+	}
+	
 
 	@Override
 	public String toString() {
-		return "City [id=" + id + ", name=" + name + ", coordinates=" + coordinates + ", country=" + country;
+		return "City [id=" + id + ", name=" + name + ", coordinates=" + coordinates + ", country=" + country
+				+ ", weatherArray=" + weatherArray + "]";
 	}
 
 	@Override

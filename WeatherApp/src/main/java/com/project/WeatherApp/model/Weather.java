@@ -16,6 +16,7 @@ public class Weather {
 	private double temp_min;
 	private double feels_like;
 	private String data;
+	
 	public String getMain() {
 		return main;
 	}
@@ -147,8 +148,8 @@ public class Weather {
 
 	@Override
 	public String toString() {
-		return "Weather [main=" + main + ", description=" + description + ", visibility=" + visibility + ", temp_max="
-				+ temp_max + ", temp_min=" + temp_min + ", feels_like=" + feels_like + ", data=" + data + "]";
+		return "\n Weather " + data + " [main=" + main + ", description=" + description + ", visibility=" + visibility + ", temp_max="
+				+ temp_max + ", temp_min=" + temp_min + ", feels_like=" + feels_like + "]";
 	}
 	
 	
