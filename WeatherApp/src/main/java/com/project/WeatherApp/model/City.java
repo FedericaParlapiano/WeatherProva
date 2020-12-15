@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @autor Francesca
  */
 
-import java.util.Vector;
+
 
 public class City implements Serializable {
 	

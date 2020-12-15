@@ -3,59 +3,35 @@
  */
 package com.project.WeatherApp.service;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
+
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Map.Entry;
 import org.json.JSONArray;
-import org.json.JSONString;
 import org.json.simple.parser.*;
 import org.json.JSONObject;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.WeatherApp.model.*;
 
 
+
 /**
- * @author feder
- *
+ * @author Federica
+ * @author Francesca
  */
 
 @Service
 
 public class ServiceImpl implements com.project.WeatherApp.service.Service {
 	
-	private static final OpenOption APPEND = null;
 	private String api_key = "666efac3e1caf3f728f8c5860edeb469";
 	
-	/*
-	public String[] getInfo () {​​​​
-		JSONObject obj;
-		String url = "api.openweathermap.org/data/2.5/forecast?q={​​​​city name}​​​​&appid={​​​​API key}​​​​";
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Content-Type","application/json");
-		//headers.set("Authorization", "Bearer " + api_key);
-		headers.set("city name","name"); //devo aggiungere il nome della città al corpo della richiesta su post
-		RestTemplate restTemplate = new RestTemplate();
-	}
-	*/
 	
 	//va a prendere le previsioni meteo di una città
 	public JSONObject getCityWeather(String city) {
@@ -184,24 +160,28 @@ public class ServiceImpl implements com.project.WeatherApp.service.Service {
 		
 	}
 	
-	
 	public String save(String cityName) throws IOException {
-		
-		String nomeFile = "info.txt";
 		
 		City city = getCityWeatherRistrictfromApi(cityName);		
 		
+		JSONObject obj = new JSONObject();
 		ToJSON tojson = new ToJSON();
-		JSONObject object = tojson.parser(city);
-		String myJsonObjectSerialized = object.toString();
 		
-		String path = "C:/Users/feder/eclipse-workspace/fileInfo.txt";
+		obj = tojson.parser(city);
+		//String myJsonObjectSerialized = obj.toString();
+		
+		SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+		String today = date.format(new Date());
+		
+		String nomeFile = cityName+today;
+		
+		String path = "C:/Users/feder/eclipse-workspace/"+nomeFile+".txt";
 		
 		
         ObjectOutputStream outputStream = null;
         try{
         	outputStream = new ObjectOutputStream(new FileOutputStream(path));
-            outputStream.writeObject(myJsonObjectSerialized);
+            outputStream.writeObject(obj.toString());
             outputStream.flush();
             outputStream.close();
          }
@@ -227,13 +207,21 @@ public class ServiceImpl implements com.project.WeatherApp.service.Service {
 		
 		int i=0;
 		
-		//((Character.toString((weather[i].getData()).charAt(0))) + (Character.toString((weather[i].getData()).charAt(1)))).equals(day)
-		while( i<8 ) {
+		String date = "";
+		date += (city.getVector()[0].getData()).charAt(8);
+		date += (city.getVector()[0].getData()).charAt(9);
+	
+		String effectiveDate = date;
+		
+		while( date.equals(effectiveDate) ) {
 			temp_max_ave += city.getVector()[i].getTemp_max();
 			temp_min_ave += city.getVector()[i].getTemp_min();
 			feels_like_ave += city.getVector()[i].getFeels_like();
 			visibility_ave += city.getVector()[i].getVisibility();
 			i++;
+			effectiveDate = "";
+			effectiveDate += (city.getVector()[i].getData()).charAt(8);
+			effectiveDate += (city.getVector()[i].getData()).charAt(9);
 		}
 			
 		temp_max_ave = temp_max_ave/i;
@@ -251,9 +239,142 @@ public class ServiceImpl implements com.project.WeatherApp.service.Service {
 		
 		
 		return object;
+		
 	}
 	
 	
+	public JSONObject fiveDayAverage(String name) {
+		 
+		
+		City city = new City(name);
+		city = getCityWeatherRistrictfromApi(name);
+		
+		double temp_max_ave = 0;
+		double temp_min_ave = 0;
+		double feels_like_ave = 0;
+		double visibility_ave = 0;
+		
+		int i=0;
+		
+		while( i<city.getVector().length ) {
+			temp_max_ave += city.getVector()[i].getTemp_max();
+			temp_min_ave += city.getVector()[i].getTemp_min();
+			feels_like_ave += city.getVector()[i].getFeels_like();
+			visibility_ave += city.getVector()[i].getVisibility();
+			i++;
+			}
+			
+		temp_max_ave = temp_max_ave/i;
+		temp_min_ave = temp_min_ave/i;
+		feels_like_ave = feels_like_ave/i;
+		visibility_ave = visibility_ave/i;
+		
+		JSONObject object = new JSONObject();
+		
+		object.put("CityName", name);
+		object.put("Temp_Max Average", temp_max_ave);
+		object.put("Temp_Min Average", temp_min_ave);
+		object.put("Feels_like Average", feels_like_ave);
+		object.put("Visibility Average", visibility_ave);
+
+		return object;
+		
+	}
+	
+	public JSONArray statsHistory(String name1) throws IOException, ParseException {
+		
+		JSONObject jsonObject1;
+		JSONObject jsonObject2;
+		
+		String path = "C:/Users/feder/eclipse-workspace/WeatherApp/WeatherApp/prova.txt";
+		
+		BufferedReader reader = new BufferedReader(new FileReader(path));
+		
+		String json = "";
+		try {
+		    StringBuilder sb1 = new StringBuilder();
+		    String line = reader.readLine();
+
+		    while (line != "\n") {
+		        sb1.append(line);
+		        sb1.append("\n");
+		        line = reader.readLine();
+		    }
+		    json = sb1.toString();
+		    jsonObject1 = new JSONObject(json);
+		    json = "";
+		    
+		    StringBuilder sb2 = new StringBuilder();
+		    while (line != null) {
+		        sb2.append(line);
+		        sb2.append("\n");
+		        line = reader.readLine();
+		    }
+		    json = sb2.toString();
+		    jsonObject2 = new JSONObject(json);
+		} finally {
+		    reader.close();
+		}
+		
+		JSONArray arr = new JSONArray();
+		arr.put(jsonObject1);
+		arr.put(jsonObject2);
+		
+		return arr;
+		
+		
+	}
+
+	
+	
+	/*
+	public JSONObject statsHistory2(String name1, String name2) throws IOException, ParseException {
+		
+		JSONObject jsonObject1;
+		JSONObject jsonObject2;
+		
+		String path = "C:/Users/feder/eclipse-workspace/WeatherApp/WeatherApp/prova.txt";
+		
+		BufferedReader reader = new BufferedReader(new FileReader(path));
+		
+		String json = "";
+		try {
+		    StringBuilder sb = new StringBuilder();
+		    String line = reader.readLine();
+
+		    while (line != null) {
+		        sb.append(line);
+		        sb.append("\n");
+		        line = reader.readLine();
+		    }
+		    json = sb.toString();
+		} finally {
+		    reader.close();
+		}
+		
+		System.out.println(json);
+		
+		/*
+		JSONParser parser = new JSONParser(); 
+		object = (JSONObject) parser.parse(json);
+		
+		try {
+		     jsonObject1 = new JSONObject(json);
+		     jsonObject2 = new JSONObject(json);
+		     JSONObject jsonObject = new JSONObject();
+		     jsonObject.put("1", jsonObject1);
+		     jsonObject.put("2", jsonObject2);
+		     
+		     return jsonObject;
+		}catch (JSONException err){
+		}
+		
+		JSONObject obj = new JSONObject();
+		return obj;
+		
+		
+	}
+	*/
 	
 	
 }

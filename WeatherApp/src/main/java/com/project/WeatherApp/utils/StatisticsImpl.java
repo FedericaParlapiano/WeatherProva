@@ -1,15 +1,15 @@
-package com.project.WeatherApp.utils.stats;
+package com.project.WeatherApp.utils;
 
 import org.json.JSONObject;
 
 import com.project.WeatherApp.model.City;
-import com.project.WeatherApp.model.Weather;
 import com.project.WeatherApp.service.Service;
-import com.project.WeatherApp.service.ToJSON;
 
 public class StatisticsImpl {
 	
+	
 	Service service;
+	
 	
 	/*
 	public JSONObject todayAverage(String name) {
@@ -68,7 +68,7 @@ public class StatisticsImpl {
 	}
 	*/
 	
-	/*
+	
 	public JSONObject todayAverage(String name) {
 		
 		
@@ -107,7 +107,8 @@ public class StatisticsImpl {
 		return object;
 		
 	}
-	*/
+	
+	/*
 	
 	public JSONObject todayAverage(String name) {
 		 
@@ -116,5 +117,7 @@ public class StatisticsImpl {
 		
 		return json;
 	}
+	*/
+	
 
 }

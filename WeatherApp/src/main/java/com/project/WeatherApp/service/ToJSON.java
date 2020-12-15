@@ -2,8 +2,6 @@ package com.project.WeatherApp.service;
 
 import com.project.WeatherApp.model.*;
 import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.json.JSONArray;
 
 public class ToJSON {
