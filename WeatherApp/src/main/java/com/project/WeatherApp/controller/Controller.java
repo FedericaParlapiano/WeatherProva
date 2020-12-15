@@ -3,6 +3,8 @@
  */
 package com.project.WeatherApp.controller;
 
+import java.io.IOException;
+
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.*;
 
+import com.project.WeatherApp.model.*;
 import com.project.WeatherApp.service.Service;
+import com.project.WeatherApp.service.ToJSON;
+import com.project.WeatherApp.utils.stats.Statistics;
+import com.project.WeatherApp.utils.stats.StatisticsImpl;
 
 /**
  * @author feder
@@ -32,13 +38,7 @@ public class Controller {
 	
 	@Autowired
 	Service service;
-	
-	/*
-	@GetMapping("/City")
-	public JSONObject getCity() {
-		return service.getCityWeather("Tolentino");
-	}
-	*/
+	StatisticsImpl statistic = new StatisticsImpl();
 	
 	@GetMapping(value="/city")
     public ResponseEntity<Object> getCity(@RequestParam String cityName) {
@@ -55,57 +55,41 @@ public class Controller {
 		return new ResponseEntity<> (service.getVisibilityfromApi(cityName).toString(), HttpStatus.OK);
     }
 	
-	@GetMapping(value="/cityWeather")
+	@GetMapping(value="/restrictCityWeather")
     public ResponseEntity<Object> getCityWeather(@RequestParam String cityName) {
-		return new ResponseEntity<> (service.getCityWeatherRistrictfromApi(cityName).toString(), HttpStatus.OK);
+		
+		City city = service.getCityWeatherRistrictfromApi(cityName);
+		
+		JSONObject obj = new JSONObject();
+		ToJSON tojson = new ToJSON();
+		
+		obj = tojson.parser(city);
+		
+		
+		return new ResponseEntity<> (obj.toString(), HttpStatus.OK);
     }
 	
-	
-	/*
-	@GetMapping(value="/visibility")
-    public ResponseEntity<Object> getVisibility(@RequestParam String cityName) {
-		return new ResponseEntity<> (service.getVisibilityfromApi(cityName).toString(), HttpStatus.OK);
-    }
-	
-	/*
-	@GetMapping("/City")
-	public JSONObject getCity() {
+	@GetMapping(value="/save")
+    public ResponseEntity<Object> saveToAFile(@RequestParam String cityName) throws IOException {
 		
-		JSONObject obj = null;
+		String nomeFile = service.save(cityName);
 		
-		obj.put("country", "IT");
-		obj.put("name", "Termoli");
+		return new ResponseEntity<> ("Salvato nel file"+nomeFile , HttpStatus.OK);
+	}
+	
+	
+	@GetMapping(value="/todayAverage")
+    public ResponseEntity<Object> todayAverage(@RequestParam String cityName) throws IOException {
 		
-		return obj;
-	}
-	
-	*/
-	
-	/*
-	@GetMapping("/City")
-	public JSONObject getCity(@RequestParam(name="name", defaultValue="none") String name) {
+		JSONObject obj = new JSONObject();
+		obj = service.todayAverage(cityName);
 		
-		return service.getCityWeather(name);
+		return new ResponseEntity<> (obj.toString(), HttpStatus.OK);
 	}
 	
-	/*
 	
-	@RequestMapping(value="City​​", method = RequestMethod.GET)
-	public JSONObject getCity(@RequestParam(value="city") String city) {​​
-		return service.getCityWeather(city);
-	}
 	
-	/*
-	@GetMapping("/City")
-	public ResponseEntity<Object> getCity(@RequestParam(name="name", defaultValue="none") String name) {​​​​
-		return new ResponseEntity<>(service.getCityWeather(name), HttpStatus.OK);
-	}
-	*/
-	/*
-	@RequestMapping(value="/City")
-	public ResponseEntity<Object> getCity() {
-		return new ResponseEntity<> (service.getCityWeather("Termoli"),HttpStatus.OK);
-	}
-	*/
+	
+	
 	
 }

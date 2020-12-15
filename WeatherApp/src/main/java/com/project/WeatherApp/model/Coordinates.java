@@ -3,12 +3,16 @@
  */
 package com.project.WeatherApp.model;
 
+import java.io.Serializable;
+
 /**
  * @author Federica
  * @author Francesca
  */
-public class Coordinates {
+public class Coordinates implements Serializable {
 
+	static final long serialVersionUID = 1;
+	
 	protected double latitude;
 	protected double longitude;
 	

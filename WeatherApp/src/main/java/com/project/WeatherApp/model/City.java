@@ -3,6 +3,8 @@
  */
 package com.project.WeatherApp.model;
 
+import java.io.Serializable;
+
 /**
  * @author Federica
  * @autor Francesca
@@ -10,12 +12,14 @@ package com.project.WeatherApp.model;
 
 import java.util.Vector;
 
-public class City {
+public class City implements Serializable {
+	
+	static final long serialVersionUID = 1;
 
-	protected String name;
-	protected long id;
-	protected Coordinates coordinates;
-	protected String country;
+	private String name;
+	private String country;
+	private long id;
+	private Coordinates coordinates;
 	//private Vector<Weather> weatherArray = new Vector<Weather>();
 	private Weather[] vector = new Weather[40];
 	
@@ -117,8 +121,8 @@ public class City {
 
 	@Override
 	public String toString() {
-		return "City [id=" + id + ", name=" + name + ", coordinates=" + coordinates + ", country=" + country
-				+ ", weatherArray=" + toStringVector() + "]";
+		return "id=" + id + ", name=" + name + ", coordinates=" + coordinates + ", country=" + country
+				+ ", weatherArray=" + toStringVector() + "";
 	}
 
 	@Override

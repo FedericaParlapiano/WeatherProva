@@ -3,11 +3,15 @@
  */
 package com.project.WeatherApp.model;
 
+import java.io.Serializable;
+
 /**
  * @author Federica
  * @author Francesca
  */
-public class Weather {
+public class Weather implements Serializable {
+	
+	static final long serialVersionUID = 1;
 	
 	private String main;
 	private String description;
@@ -148,8 +152,8 @@ public class Weather {
 
 	@Override
 	public String toString() {
-		return "\n Weather " + data + " [main=" + main + ", description=" + description + ", visibility=" + visibility + ", temp_max="
-				+ temp_max + ", temp_min=" + temp_min + ", feels_like=" + feels_like + "]";
+		return "data=" + data + "main=" + main + ", description=" + description + ", visibility=" + visibility + ", temp_max="
+				+ temp_max + ", temp_min=" + temp_min + ", feels_like=" + feels_like + "";
 	}
 	
 	
